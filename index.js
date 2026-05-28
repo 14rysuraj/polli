@@ -3,17 +3,24 @@ import userRoutes from './routes/user.routes.js'
 import connectDB from './config/db.config.js';
 import cookieParser from 'cookie-parser';
 import env from 'dotenv'
+import cors from 'cors';
 
 const app = express();
-const port = 1000;
+const port = process.env.PORT ;
 
 env.config()
 connectDB();
+
+
 
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({
     extended:true,
+}))
+
+app.use(cors({
+    origin:'*'
 }))
 
 app.use('/api', userRoutes);
