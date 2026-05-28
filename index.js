@@ -1,0 +1,24 @@
+import express from 'express';
+import userRoutes from './routes/user.routes.js'
+import connectDB from './config/db.config.js';
+import cookieParser from 'cookie-parser';
+import env from 'dotenv'
+
+const app = express();
+const port = 1000;
+
+env.config()
+connectDB();
+
+app.use(express.json());
+app.use(cookieParser());
+app.use(express.urlencoded({
+    extended:true,
+}))
+
+app.use('/api', userRoutes);
+
+app.listen(port, (err) => {
+    if (err) return console.log(err);   
+    console.log(`Server is running on port ${port}`);
+})
