@@ -46,7 +46,6 @@ export const register = async (req,res) => {
     }
 }
 
-
 export const login = async (req, res) => {
     
     //accept the parameter
@@ -183,3 +182,4 @@ export const getProfile = async (req, res) => {
         });
     }
 }
+

@@ -34,6 +34,7 @@ const userSchema = new mongoose.Schema(
             maxlength: 20,
             default:'A1'
         },
+
     },
     { timestamps: true }
 )

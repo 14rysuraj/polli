@@ -34,6 +34,14 @@ Base URL: `http://localhost:1000/api`
 - `password`: string, required, min 6 (stored hashed)
 - `level`: string, default `A1`, max 20
 
+### Data Types (Progress)
+- `userId`: ObjectId, required, ref `User`
+- `streak`: number, default 0
+- `hours`: number, default 0
+- `lessons`: number, default 0
+- `accuracy`: number, default 0, range 0-1
+- `vocab`: number, default 0
+
 ### Endpoints
 #### `POST /register`
 Create a new user.
@@ -109,9 +117,59 @@ Success response:
 }
 ```
 
+#### `GET /progress` (protected)
+Fetch current user progress.
+
+Success response:
+```json
+{
+  "message": "progress fetched successfully",
+  "progress": {
+    "id": "string",
+    "userId": "string",
+    "streak": 0,
+    "hours": 0,
+    "lessons": 0,
+    "accuracy": 0.0,
+    "vocab": 0
+  }
+}
+```
+
+#### `PUT /progress` (protected)
+Update current user progress (partial updates supported).
+
+Request body (any of these fields):
+```json
+{
+  "streak": 5,
+  "hours": 2.5,
+  "lessons": 12,
+  "accuracy": 0.92,
+  "vocab": 320
+}
+```
+
+Success response:
+```json
+{
+  "message": "progress updated successfully",
+  "progress": {
+    "id": "string",
+    "userId": "string",
+    "streak": 5,
+    "hours": 2.5,
+    "lessons": 12,
+    "accuracy": 0.92,
+    "vocab": 320
+  }
+}
+```
+
 ### Common Error Messages
 - `all fields are required`
 - `invalid credentials`
 - `user already exists`
 - `user not found`
 - `database error`
+- `at least one field is required`
