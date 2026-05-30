@@ -13,15 +13,18 @@ export const register = async (req,res) => {
 
     if (!name || !nationality || !email || !password)
     {
-       return res.json({
+       return res.status(400).json({
+            'success': false,
             'message':"all fields are required"
         })
 }
 
+  
     try {
         const existingUser = await User.findOne({ email: email});
         if (existingUser) {
-            return res.json({
+            return res.status(409).json({
+                "success": false,
                 "message":"user already exists"
             })
         }
@@ -35,12 +38,14 @@ export const register = async (req,res) => {
             password: hashedPassword,
         })
 
-        return res.json({
+        return res.status(201).json({
+            "success": true,
             "message":"user created successfully"
         })
     } catch (err) {
         console.log(err);
-        return res.json({
+        return res.status(500).json({
+            'success': false,
             'message':"db error"
         })
     }
@@ -60,13 +65,14 @@ export const login = async (req, res) => {
 
     const { email, password } = req.body;
 
-    if (!email || !password) return res.json({ "message": "all fields are required" });
+    if (!email || !password) return res.status(400).json({ "success": false, "message": "all fields are required" });
 
     try {
         const user = await User.findOne({ email: email }).select('+password');
 
         if (!user) {
-            return res.json({
+            return res.status(401).json({
+                "success": false,
                 "message": "invalid credentials"
             })
         }
@@ -74,7 +80,8 @@ export const login = async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
 
         if (!isMatch) {
-            return res.json({
+            return res.status(401).json({
+                "success": false,
                 "message": "invalid credentials"
             })
         }
@@ -90,7 +97,8 @@ export const login = async (req, res) => {
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       });
         
-        res.json({
+        res.status(200).json({
+            "success": true,
             "message": "login successfully",
             token,
             user: {
@@ -101,7 +109,8 @@ export const login = async (req, res) => {
       })
     } catch (err) {
         console.log("db error ", err)
-        return res.json({
+        return res.status(500).json({
+            "success": false,
             "message": "database error"
         });
     }
@@ -111,13 +120,15 @@ export const updateProfile = async (req, res) => {
     const { name, password } = req.body;
 
     if (!name && !password) {
-        return res.json({
+        return res.status(400).json({
+            "success": false,
             "message": "name or password is required"
         });
     }
 
     if (password && password.length < 6) {
-        return res.json({
+        return res.status(400).json({
+            "success": false,
             "message": "password must be at least 6 characters"
         });
     }
@@ -134,12 +145,14 @@ export const updateProfile = async (req, res) => {
         ).select("name email");
 
         if (!updatedUser) {
-            return res.json({
+            return res.status(404).json({
+                "success": false,
                 "message": "user not found"
             })
         }
 
-        return res.json({
+        return res.status(200).json({
+            "success": true,
             "message": "profile updated successfully",
             user: {
                 id: updatedUser._id.toString(),
@@ -149,7 +162,8 @@ export const updateProfile = async (req, res) => {
         })
     } catch (err) {
         console.log("db error ", err)
-        return res.json({
+        return res.status(500).json({
+            "success": false,
             "message": "database error"
         });
     }
@@ -160,12 +174,14 @@ export const getProfile = async (req, res) => {
         const user = await User.findById(req.user.id).select("name email nationality level");
 
         if (!user) {
-            return res.json({
+            return res.status(404).json({
+                "success": false,
                 "message": "user not found"
             })
         }
 
-        return res.json({
+        return res.status(200).json({
+            "success": true,
             "message": "profile fetched successfully",
             user: {
                 id: user._id.toString(),
@@ -177,9 +193,9 @@ export const getProfile = async (req, res) => {
         })
     } catch (err) {
         console.log("db error ", err)
-        return res.json({
+        return res.status(500).json({
+            "success": false,
             "message": "database error"
         });
     }
 }
-
