@@ -56,9 +56,11 @@ Request body:
 }
 ```
 
+Status codes: `201` success, `400` validation, `409` user exists, `500` server error.
+
 Success response:
 ```json
-{ "message": "user created successfully" }
+{ "success": true, "message": "user created successfully" }
 ```
 
 #### `POST /login`
@@ -72,9 +74,12 @@ Request body:
 }
 ```
 
+Status codes: `200` success, `400` validation, `401` invalid credentials, `500` server error.
+
 Success response:
 ```json
 {
+  "success": true,
   "message": "login successfully",
   "token": "jwt-string",
   "user": { "id": "string", "email": "string", "name": "string" }
@@ -92,9 +97,12 @@ Request body (at least one field):
 }
 ```
 
+Status codes: `200` success, `400` validation, `404` user not found, `500` server error.
+
 Success response:
 ```json
 {
+  "success": true,
   "message": "profile updated successfully",
   "user": { "id": "string", "email": "string", "name": "string" }
 }
@@ -103,9 +111,12 @@ Success response:
 #### `GET /fetch-profile` (protected)
 Fetch current user profile.
 
+Status codes: `200` success, `404` user not found, `500` server error.
+
 Success response:
 ```json
 {
+  "success": true,
   "message": "profile fetched successfully",
   "user": {
     "id": "string",
